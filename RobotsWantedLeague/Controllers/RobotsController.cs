@@ -6,6 +6,13 @@ using RobotsWantedLeague.Services;
 namespace RobotsWantedLeague.Controllers;
 
 public class RobotRequest{
+    public RobotRequest(){
+        this.Name = "";
+        this.Country = "";
+        this.Height = 0;
+        this.Weight = 0;
+    }
+    
     public string Name { get; set; }
     public int Height { get; set; }
     public int Weight { get; set; }
