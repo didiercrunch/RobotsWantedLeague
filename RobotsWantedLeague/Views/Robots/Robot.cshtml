@@ -1,10 +1,14 @@
 @model Robot
 
+@{
+    string imageURL = "https://robohash.org/aligator" + Model.Id.ToString() + "?set=set2";
+}
+
 <div class="container">
     <div class="d-flex justify-content-center">
         <div class="card" style="width: 10rem;">
             <img class="card-img-top" 
-            src="https://robohash.org/aligator@Model.Id?set=set2">
+                 src="@imageURL">
         </div>
     </div>
 </div>
