@@ -1,21 +1,25 @@
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
+
 namespace RobotsWantedLeague.Services;
 
 using RobotsWantedLeague.Models;
 
 public class RobotsService: IRobotsService
 {
-    private readonly List<Robot> robots;
-    private int idGenerator = 0;
-    public List<Robot> Robots { get => robots; }
+    private readonly IMongoCollection<Robot> robotsCollection;
 
-    public RobotsService()
+    public List<Robot> Robots { get => robotsCollection.AsQueryable().ToList(); }
+
+    public RobotsService(IOptions<RobotsDatabaseSettings> bookStoreDatabaseSettings)
     {
-        robots = new List<Robot>();
-    }
+        var mongoClient = new MongoClient(
+            bookStoreDatabaseSettings.Value.ConnectionString);
 
-    private int generateId(){
-        idGenerator = idGenerator + 1;
-        return idGenerator;
+        var mongoDatabase = mongoClient.GetDatabase(
+            bookStoreDatabaseSettings.Value.DatabaseName);
+
+        this.robotsCollection = mongoDatabase.GetCollection<Robot>(bookStoreDatabaseSettings.Value.RobotsCollectionName);
     }
 
     public Robot CreateRobot(string name,
@@ -23,37 +27,24 @@ public class RobotsService: IRobotsService
                           int height,
                           string country)
     {
-        var robot = new Robot(generateId(), name, weight, height, country);
-        robots.Add(robot);
+        var robot = new Robot(null, name, weight, height, country);
+        robotsCollection.InsertOne(robot);
         return robot;
     }
+    
 
-    private int getIndexOfRobotById(int id){
-        int idx = 0;
-        foreach (Robot robot in robots){
-            if (robot.Id == id){
-                return idx;
-            }
-            idx ++;
-        }
-        return -1;
+    public Robot? GetRobotById(string id)
+    {
+        IQueryable<Robot> q = from robot in robotsCollection.AsQueryable()
+            where robot.Id == id
+            select robot;
+        return q.First();
     }
 
-    public Robot? GetRobotById(int id){
-        int indexToDelete = getIndexOfRobotById(id);
-        if(indexToDelete == -1){
-            return null;
-        }
-        return robots[indexToDelete];
-    }
-
-    public bool DeleteRobotById(int id){
-        int indexToDelete = getIndexOfRobotById(id);
-        if(indexToDelete == -1){
-            return false;
-        }
-        robots.RemoveAt(indexToDelete);
-        return true;
+    public bool DeleteRobotById(string id)
+    {
+        var res = robotsCollection.DeleteOne(robot => robot.Id == id);
+        return res != null ;
     }
 
 }

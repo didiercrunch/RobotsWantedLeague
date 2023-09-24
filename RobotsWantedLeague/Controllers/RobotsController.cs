@@ -37,8 +37,8 @@ public class RobotsController : Controller
         return View(robotsService.Robots);
     }
 
-    public IActionResult Robot(int id){
-        Robot robot = robotsService.GetRobotById(id);
+    public IActionResult Robot(string id){
+        Robot? robot = robotsService.GetRobotById(id);
         return View(robot);
     }
 

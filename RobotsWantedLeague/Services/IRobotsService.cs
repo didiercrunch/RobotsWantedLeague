@@ -9,7 +9,7 @@ public interface IRobotsService{
                           int height,
                           string country);
 
-    public Robot? GetRobotById(int id);
+    public Robot? GetRobotById(string id);
 
-    public bool DeleteRobotById(int id);
+    public bool DeleteRobotById(string id);
 }
