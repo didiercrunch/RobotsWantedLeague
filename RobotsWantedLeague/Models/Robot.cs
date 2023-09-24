@@ -1,7 +1,14 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace RobotsWantedLeague.Models;
 
 public class Robot{
-    public int Id { get; set;}
+    
+    [BsonId]
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string? Id { get; set;}
+    
     public string Name { get; set;}
 
     /**
@@ -16,7 +23,7 @@ public class Robot{
 
     public string Country { get; set;}
 
-    public Robot(int Id, string Name, int Weight, int Height, string Country){
+    public Robot(string? Id, string Name, int Weight, int Height, string Country){
         this.Id = Id;
         this.Name = Name;
         this.Weight = Weight;

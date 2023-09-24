@@ -1,9 +1,16 @@
+using RobotsWantedLeague.Models;
 using RobotsWantedLeague.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// database settings
+
+builder.Services.Configure<RobotsDatabaseSettings>(
+    builder.Configuration.GetSection("RobotsDatabase"));
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSingleton<RobotsService>();
 builder.Services.AddSingleton<IRobotsService, NotEmptyRobotsService>();
 var app = builder.Build();
 
